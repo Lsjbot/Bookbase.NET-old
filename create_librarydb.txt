@@ -1,0 +1,246 @@
+-- D:\Program (x86)\Microsoft Visual Studio 14.0>SqlMetal /server:KOMPLETT2015 /database:"librarydb" /code:D:\librarydb.cs
+
+create table Author
+(
+Id integer not null primary key,
+Name nvarchar(150) not null,
+Familyname nvarchar(75),
+Givenname nvarchar(75),
+FamilynameAscii nvarchar(75),
+GivennameAscii nvarchar(75),
+)
+
+create table Affiliation
+(
+Id integer not null primary key,
+Name varchar(200) not null,
+Fullstring nvarchar(300),
+Partof integer foreign key references Affiliation (Id)
+)
+
+create table Authoraffiliation
+(
+Id integer not null primary key,
+Affiliation integer not null foreign key references Affiliation (Id),
+Author integer not null foreign key references Author (Id)
+)
+
+create table Publisher
+(
+Id integer not null primary key,
+Name nvarchar(100) not null,
+URL varchar(100),
+Location nvarchar(100)
+)
+
+
+create table Journal
+(
+Id integer not null primary key,
+Name nvarchar(200) not null,
+Shortname nvarchar(50),
+ISSN varchar(15),
+Publisher integer foreign key references Publisher (Id)
+)
+
+create table Subject -- my own subject codes from articles.sub
+(
+Id varchar(8) not null primary key,
+Name varchar(50) not null
+)
+
+
+
+create table Article
+(
+Id integer not null primary key,
+Title nvarchar(400) not null,
+Crossreftitle nvarchar(400) not null,
+Pubmedtitle nvarchar(400) not null,
+Arxivtitle nvarchar(400) not null,
+Authorstring nvarchar(150) not null,
+Year integer,
+Journal integer foreign key references Journal (Id),
+Volume varchar(10),
+Issue integer,
+Pages varchar(15),
+Subj1 varchar(8) foreign key references Subject (Id),
+Subj2 varchar(8) foreign key references Subject (Id),
+Subj3 varchar(8) foreign key references Subject (Id),
+DateEntered date,
+Refstring varchar(150) not null,
+ReferenceCount integer,
+ReferencedBy integer,
+DOI varchar(80),
+Type varchar(40),
+URL varchar(200),
+Summary ntext,
+Crossref bit not null,
+PMID integer,
+Arxiv varchar(25),
+Havecopy bit
+)
+
+create table AuthorArticle
+(
+Id integer not null primary key,
+Article integer not null foreign key references Article (Id),
+Author integer not null foreign key references Author (Id),
+Source integer not null -- 0 = my file, 1 = Crossref, 2 = Pubmed, 3 = Arxiv
+)
+
+create table Subjectrelation
+(
+Id int not null primary key,
+Upper varchar(8) not null foreign key references Subject (Id),
+Lower varchar(8) not null foreign key references Subject (Id),
+)
+
+create table CrossrefSubject
+(
+Id integer not null primary key,
+Name varchar(50) not null
+)
+
+create table ArticleCrossrefSubject
+(
+Id integer not null primary key,
+Article integer not null foreign key references Article (Id),
+Subject integer not null foreign key references CrossrefSubject (Id)
+)
+
+create table PubmedSubject
+(
+Id integer not null primary key,
+Name varchar(50) not null
+)
+
+create table ArticlePubmedSubject
+(
+Id integer not null primary key,
+Article integer not null foreign key references Article (Id),
+Subject integer not null foreign key references PubmedSubject (Id)
+)
+
+create table PubmedSubjectrelation
+(
+Id int not null primary key,
+Upper int not null foreign key references PubmedSubject (Id),
+Lower int not null foreign key references PubmedSubject (Id)
+)
+
+create table Bookmusictype -- 0 = book, 1 = CD, 2 = Cassette, 3 = LP
+(
+Id integer not null primary key,
+Type varchar(15) not null
+)
+
+create table BookAlbum -- Used for both books and music
+(
+Id integer not null primary key,
+Title nvarchar(300) not null,
+YearFirst integer,
+YearThis integer,
+Publisher integer foreign key references Publisher (Id),
+Subject varchar(8) foreign key references Subject (Id),
+DateBought date,
+WhereBought varchar(60),
+Price integer,
+Type integer not null foreign key references Bookmusictype (Id),  -- 0 = book, 1 = CD, 2 = Cassette, 3 = LP
+Liked integer,
+ISBN varchar(15),
+Havecopy bit
+)
+
+create table Ref
+(
+Id integer not null primary key,
+Article integer foreign key references Article (Id),
+Book integer foreign key references BookAlbum (Id),
+Author nvarchar(40),
+Year integer,
+Title nvarchar(300),
+Journal integer foreign key references Journal (Id),
+Volume varchar(10),
+Pages varchar(15),
+DOI varchar(40)
+)
+
+create table ArticleReference
+(
+Id integer not null primary key,
+Article integer not null foreign key references Article (Id),
+Reference integer not null foreign key references Ref (Id)
+)
+
+
+create table AuthorBook
+(
+Id integer not null primary key,
+BookAlbum integer not null foreign key references BookAlbum (Id),
+Author integer not null foreign key references Author (Id)
+)
+
+create table ChapterSong -- Used for both books and music
+(
+Id integer not null primary key,
+Title nvarchar(300),
+BookAlbum integer not null foreign key references BookAlbum (Id)
+)
+
+create table AuthorChapter
+(
+Id integer not null primary key,
+ChapterSong integer not null foreign key references ChapterSong (Id),
+Author integer not null foreign key references Author (Id)
+)
+
+create table AuthorAlias
+(
+Id integer not null primary key,
+Name nvarchar(150) not null,
+Familyname nvarchar(75),
+Givenname nvarchar(75),
+Author integer not null foreign key references Author (Id)
+)
+
+create table Evolang
+(
+Id integer not null primary key,
+Title nvarchar(300) not null,
+Year integer not null
+)
+
+create table EvolangAuthor
+(
+Id integer not null primary key,
+Evolang integer not null foreign key references Evolang (Id),
+Author integer not null foreign key references Author (Id)
+)
+
+create table AuthorSubject
+(
+Id integer not null primary key,
+Author integer not null foreign key references Author (Id),
+Strength real not null,
+Subject varchar(8) foreign key references Subject (Id),
+CrossrefSubject integer foreign key references CrossrefSubject (Id),
+PubmedSubject integer foreign key references PubmedSubject (Id)
+EvolangSubject integer foreign key references EvolangSubject (Id)
+)
+
+create table EvolangSubject
+(
+Id integer not null primary key,
+Name varchar(50) not null
+)
+
+create table ArticleEvolangSubject
+(
+Id integer not null primary key,
+Evolang integer not null references Evolang (Id),
+Subject integer not null references EvolangSubject (Id)
+)
+
+
+

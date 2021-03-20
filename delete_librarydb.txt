@@ -1,0 +1,48 @@
+delete from AuthorChapter
+delete from ChapterSong
+delete from AuthorBook
+delete from ArticleReference
+delete from Ref
+delete from BookAlbum
+
+delete from Bookmusictype
+delete from PubmedSubjectrelation
+delete from ArticlePubmedSubject
+delete from PubmedSubject
+delete from ArticleCrossrefSubject
+delete from CrossrefSubject
+delete from Subjectrelation
+delete from AuthorArticle
+delete from Article
+
+delete from Subject
+delete from Journal
+delete from Publisher
+delete from Authoraffiliation
+delete from Affiliation
+delete from Author
+
+
+drop table AuthorChapter
+drop table ChapterSong
+drop table AuthorBook
+drop table ArticleReference
+drop table Ref
+drop table BookAlbum
+drop table Bookmusictype
+drop table PubmedSubjectrelation
+drop table ArticlePubmedSubject
+drop table PubmedSubject
+drop table ArticleCrossrefSubject
+drop table CrossrefSubject
+drop table Subjectrelation
+drop table AuthorArticle
+drop table Article
+drop table Subject
+drop table Journal
+drop table Publisher
+drop table Authoraffiliation
+drop table Affiliation
+drop table Author
+
+
